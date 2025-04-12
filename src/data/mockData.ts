@@ -1,4 +1,4 @@
-import { User, Content, Template, Role, DashboardMetrics } from '../types';
+import { User, Content, Template, Role, DashboardMetrics, Comment } from '../types';
 
 export const mockUsers: User[] = [
   {
@@ -19,6 +19,21 @@ export const mockUsers: User[] = [
   }
 ];
 
+const mockComments: Comment[] = [
+  {
+    id: '1',
+    content: 'Great article! Very informative.',
+    author: mockUsers[1],
+    createdAt: '2024-03-09T14:30:00Z'
+  },
+  {
+    id: '2',
+    content: 'Thanks for sharing this knowledge.',
+    author: mockUsers[0],
+    createdAt: '2024-03-09T15:45:00Z'
+  }
+];
+
 export const mockContent: Content[] = [
   {
     id: '1',
@@ -29,7 +44,15 @@ export const mockContent: Content[] = [
     tags: ['guide', 'cms'],
     author: mockUsers[0],
     template: 'article',
-    featuredImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643'
+    featuredImage: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643',
+    metrics: {
+      views: 1250,
+      comments: mockComments,
+      likes: 45,
+      shares: 23,
+      averageTimeOnPage: 180
+    },
+    lastModified: '2024-03-05T08:30:00Z'
   },
   {
     id: '2',
@@ -39,7 +62,34 @@ export const mockContent: Content[] = [
     publishDate: '',
     tags: ['content', 'guide'],
     author: mockUsers[1],
-    template: 'article'
+    template: 'article',
+    metrics: {
+      views: 0,
+      comments: [],
+      likes: 0,
+      shares: 0,
+      averageTimeOnPage: 0
+    },
+    lastModified: '2024-03-08T16:45:00Z'
+  },
+  {
+    id: '3',
+    title: 'Advanced SEO Techniques',
+    body: '<h1>SEO Mastery</h1><p>Discover advanced SEO techniques to improve your content visibility.</p>',
+    status: 'published',
+    publishDate: '2024-03-07T09:00:00Z',
+    tags: ['seo', 'marketing'],
+    author: mockUsers[0],
+    template: 'article',
+    featuredImage: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a',
+    metrics: {
+      views: 876,
+      comments: [mockComments[0]],
+      likes: 32,
+      shares: 15,
+      averageTimeOnPage: 240
+    },
+    lastModified: '2024-03-07T14:20:00Z'
   }
 ];
 

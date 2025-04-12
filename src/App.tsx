@@ -27,7 +27,7 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route element={<PublicLayout />}>
-            <Route path="/" element={<Home />} />
+            <Route index element={<Home />} />
             <Route path="/blog/:id" element={<BlogPost />} />
           </Route>
 
@@ -35,17 +35,23 @@ function App() {
           <Route path="/login" element={<Login />} />
 
           {/* Admin routes */}
-          <Route path="/admin" element={
-            <ProtectedRoute>
-              <AdminLayout />
-            </ProtectedRoute>
-          }>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<Dashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="contents" element={<Contents />} />
             <Route path="templates" element={<Templates />} />
             <Route path="roles" element={<Roles />} />
           </Route>
+
+          {/* Catch all route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

@@ -7,6 +7,13 @@ export interface User {
   lastLogin: string;
 }
 
+export interface Comment {
+  id: string;
+  content: string;
+  author: User;
+  createdAt: string;
+}
+
 export interface Content {
   id: string;
   title: string;
@@ -17,6 +24,14 @@ export interface Content {
   author: User;
   template: string;
   featuredImage?: string;
+  metrics: {
+    views: number;
+    comments: Comment[];
+    likes: number;
+    shares: number;
+    averageTimeOnPage: number; // in seconds
+  };
+  lastModified: string;
 }
 
 export interface Template {
