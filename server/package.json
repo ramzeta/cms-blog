@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
+    "build": "mkdir -p dist && cp -r index.js database routes middleware scripts dist/",
     "create-admin": "node scripts/createAdmin.js"
   },
   "dependencies": {

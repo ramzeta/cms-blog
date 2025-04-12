@@ -18,63 +18,72 @@ api.interceptors.request.use((config) => {
 
 // Handle response errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
-    return Promise.reject(error);
+    return Promise.reject(error.response?.data || error);
   }
 );
 
 export const auth = {
   login: async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      return response;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   },
 };
 
 export const users = {
   getAll: async () => {
     const response = await api.get('/users');
-    return response.data;
+    return response;
   },
   create: async (userData: any) => {
     const response = await api.post('/users', userData);
-    return response.data;
+    return response;
   },
   update: async (id: string, userData: any) => {
-    const response = await api.put(`/users/${id}`, userData);
-    return response.data;
+    // Only send fields that are not empty
+    const updateData = Object.fromEntries(
+      Object.entries(userData).filter(([_, value]) => value !== '')
+    );
+    const response = await api.put(`/users/${id}`, updateData);
+    return response;
   },
   delete: async (id: string) => {
     const response = await api.delete(`/users/${id}`);
-    return response.data;
+    return response;
   },
 };
 
 export const content = {
   getAll: async () => {
     const response = await api.get('/content');
-    return response.data;
+    return response;
   },
   getById: async (id: string) => {
     const response = await api.get(`/content/${id}`);
-    return response.data;
+    return response;
   },
   create: async (contentData: any) => {
     const response = await api.post('/content', contentData);
-    return response.data;
+    return response;
   },
   update: async (id: string, contentData: any) => {
     const response = await api.put(`/content/${id}`, contentData);
-    return response.data;
+    return response;
   },
   delete: async (id: string) => {
     const response = await api.delete(`/content/${id}`);
-    return response.data;
+    return response;
   },
 };
 

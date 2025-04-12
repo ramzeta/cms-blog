@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"cd server && node index.js\"",
-    "build": "vite build",
+    "build": "vite build && cd server && npm run build",
+    "build:frontend": "vite build",
+    "build:backend": "cd server && npm run build",
+    "start": "cd server && node index.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "cd server && node index.js"
