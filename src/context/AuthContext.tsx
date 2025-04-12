@@ -1,17 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
+import { mockUsers } from '../data/mockData';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: any;
-  login: (response: any) => void;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   user: null,
-  login: () => {},
+  login: async () => false,
   logout: () => {},
 });
 
@@ -20,25 +20,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      const decoded = jwtDecode(token);
-      setUser(decoded);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
       setIsAuthenticated(true);
     }
   }, []);
 
-  const login = (response: any) => {
-    const decoded = jwtDecode(response.credential);
-    setUser(decoded);
-    setIsAuthenticated(true);
-    localStorage.setItem('token', response.credential);
+  const login = async (email: string, password: string): Promise<boolean> => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // For demo purposes, accept any email that exists in mockUsers
+    const foundUser = mockUsers.find(u => u.email === email);
+    
+    if (foundUser) {
+      setUser(foundUser);
+      setIsAuthenticated(true);
+      localStorage.setItem('user', JSON.stringify(foundUser));
+      return true;
+    }
+    
+    return false;
   };
 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   };
 
   return (
