@@ -6,9 +6,9 @@ import TopNav from './TopNav';
 
 const AdminLayout = () => {
   return (
-    <div className="d-flex">
+    <div className="d-flex h-100">
       <Sidebar />
-      <div className="flex-grow-1 min-vh-100 bg-light">
+      <div className="flex-grow-1 min-vh-100 bg-theme">
         <TopNav />
         <Container fluid className="px-4 py-3">
           <Outlet />

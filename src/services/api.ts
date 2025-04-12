@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: '/',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -51,11 +51,7 @@ export const users = {
     return response;
   },
   update: async (id: string, userData: any) => {
-    // Only send fields that are not empty
-    const updateData = Object.fromEntries(
-      Object.entries(userData).filter(([_, value]) => value !== '')
-    );
-    const response = await api.put(`/users/${id}`, updateData);
+    const response = await api.put(`/users/${id}`, userData);
     return response;
   },
   delete: async (id: string) => {
@@ -85,6 +81,45 @@ export const content = {
     const response = await api.delete(`/content/${id}`);
     return response;
   },
+};
+
+export const search = {
+  query: async (searchTerm: string, options: { generate?: boolean; ai?: 'ollama' | 'openai' } = {}) => {
+    const params = new URLSearchParams({
+      q: searchTerm,
+      ...(options.generate ? { generate: 'true' } : {}),
+      ...(options.ai ? { ai: options.ai } : {})
+    });
+    const response = await api.get(`/search?${params}`);
+    return response;
+  },
+};
+
+export const settings = {
+  saveApiKey: async (apiKey: string) => {
+    const response = await api.post('/settings/openai-key', { apiKey });
+    return response;
+  },
+  checkApiKey: async () => {
+    const response = await api.get('/settings/openai-key');
+    return response;
+  },
+};
+
+export const interactions = {
+  getForContent: async (contentId: string) => {
+    const response = await api.get(`/interactions/${contentId}`);
+    return response;
+  },
+  recordInteraction: async (data: {
+    contentId: string;
+    fingerprint: string;
+    action: 'view' | 'like' | 'comment';
+    comment?: string;
+  }) => {
+    const response = await api.post('/interactions', data);
+    return response;
+  }
 };
 
 export default api;

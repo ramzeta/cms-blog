@@ -9,16 +9,40 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': {
+      '/auth': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-        configure: (proxy, options) => {
-          proxy.on('error', (err) => {
-            const currentPort = new URL(options.target).port;
-            const nextPort = parseInt(currentPort) + 1;
-            options.target = `http://localhost:${nextPort}`;
-          });
-        }
+        secure: false
+      },
+      '/content': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/users': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/roles': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/settings': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/search': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/interactions': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false
       }
     },
   },

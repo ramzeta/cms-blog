@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Navbar, Nav, Dropdown, Modal, Form, Button } from 'react-bootstrap';
-import { Bell, User, Mail, Key } from 'lucide-react';
+import { Bell, User, Mail, Key, Sun, Moon } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 import { useNavigate } from 'react-router-dom';
 
 const TopNav = () => {
   const { user, logout, updateUser } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -35,14 +37,29 @@ const TopNav = () => {
     <>
       <Navbar className="top-nav px-4">
         <Nav className="ms-auto d-flex align-items-center">
+          <Button
+            variant={theme === 'light' ? 'light' : 'dark'}
+            className="d-flex align-items-center me-3 rounded-circle p-2"
+            onClick={toggleTheme}
+            title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            style={{ width: '40px', height: '40px', border: '1px solid var(--border-color)' }}
+          >
+            {theme === 'light' ? (
+              <Moon size={20} className="text-theme" />
+            ) : (
+              <Sun size={20} className="text-theme" />
+            )}
+          </Button>
+
           <Nav.Link href="#" className="position-relative me-3">
             <Bell size={20} />
             <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
               2
             </span>
           </Nav.Link>
+
           <Dropdown>
-            <Dropdown.Toggle variant="link" className="text-dark d-flex align-items-center">
+            <Dropdown.Toggle variant="link" className="text-theme d-flex align-items-center">
               <User size={20} className="me-2" />
               {user?.name || 'User'}
             </Dropdown.Toggle>

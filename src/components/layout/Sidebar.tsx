@@ -4,7 +4,6 @@ import {
   LayoutDashboard, 
   Users, 
   FileText, 
-  Palette, 
   Shield 
 } from 'lucide-react';
 
@@ -25,10 +24,6 @@ const Sidebar = () => {
           <NavLink to="/admin/contents" className="sidebar-link mb-2">
             <FileText size={20} className="sidebar-icon" />
             Contents
-          </NavLink>
-          <NavLink to="/admin/templates" className="sidebar-link mb-2">
-            <Palette size={20} className="sidebar-icon" />
-            Templates
           </NavLink>
           <NavLink to="/admin/roles" className="sidebar-link mb-2">
             <Shield size={20} className="sidebar-icon" />
