@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Card } from 'react-bootstrap';
+import { Card, Alert } from 'react-bootstrap';
 import { ArrowLeft } from 'lucide-react';
-import { mockContent } from '../data/mockData';
+import { content } from '../services/api';
 import { format } from 'date-fns';
+
+interface Post {
+  id: string;
+  title: string;
+  body: string;
+  author_name: string;
+  tags: string[];
+  featured_image?: string;
+  publish_date: string;
+}
 
 const AdBanner = ({ position }: { position: 'left' | 'right' }) => (
   <div className="hidden lg:block w-[160px] fixed top-1/2 -translate-y-1/2" style={{ [position]: '2rem' }}>
@@ -22,9 +32,38 @@ const AdBanner = ({ position }: { position: 'left' | 'right' }) => (
 
 const BlogPost = () => {
   const { id } = useParams();
-  const post = mockContent.find(content => content.id === id);
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string>('');
 
-  if (!post) {
+  useEffect(() => {
+    fetchPost();
+  }, [id]);
+
+  const fetchPost = async () => {
+    try {
+      if (!id) return;
+      const data = await content.getById(id);
+      setPost(data);
+    } catch (err) {
+      console.error('Error fetching post:', err);
+      setError('Failed to load blog post');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="text-center py-5">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
     return (
       <div className="text-center py-8">
         <h2 className="text-2xl font-bold mb-4">Post not found</h2>
@@ -48,10 +87,10 @@ const BlogPost = () => {
         </Link>
         
         <Card className="border-0 shadow-lg">
-          {post.featuredImage && (
+          {post.featured_image && (
             <div className="h-[400px] overflow-hidden">
               <img 
-                src={post.featuredImage} 
+                src={post.featured_image} 
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
@@ -62,9 +101,9 @@ const BlogPost = () => {
             <div className="mb-6">
               <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
               <div className="flex items-center text-gray-600 mb-4">
-                <span className="mr-4">By {post.author.name}</span>
-                {post.publishDate && (
-                  <span>{format(new Date(post.publishDate), 'MMMM dd, yyyy')}</span>
+                <span className="mr-4">By {post.author_name}</span>
+                {post.publish_date && (
+                  <span>{format(new Date(post.publish_date), 'MMMM dd, yyyy')}</span>
                 )}
               </div>
               <div className="flex flex-wrap gap-2">

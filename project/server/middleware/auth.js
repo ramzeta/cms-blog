@@ -13,13 +13,14 @@ export const authenticateToken = (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
+    console.error('Token verification error:', err);
     return res.status(403).json({ message: 'Invalid or expired token' });
   }
 };
 
 export const authorizeRole = (roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ message: 'Insufficient permissions' });
     }
     next();

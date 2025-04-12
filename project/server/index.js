@@ -7,6 +7,8 @@ import { createAdminUser } from './scripts/createAdmin.js';
 import authRoutes from './routes/auth.js';
 import contentRoutes from './routes/content.js';
 import usersRoutes from './routes/users.js';
+import templatesRoutes from './routes/templates.js';
+import rolesRoutes from './routes/roles.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,18 +22,8 @@ app.use(morgan('dev'));
 app.use('/api/auth', authRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/users', usersRoutes);
-
-// Initialize database and create admin user
-async function initialize() {
-  try {
-    await initializeDatabase();
-    console.log('Database initialized');
-    await createAdminUser();
-  } catch (error) {
-    console.error('Initialization failed:', error);
-    process.exit(1);
-  }
-}
+app.use('/api/templates', templatesRoutes);
+app.use('/api/roles', rolesRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
@@ -56,6 +48,18 @@ const startServer = (port) => {
     process.exit(1);
   }
 };
+
+// Initialize database and create admin user
+async function initialize() {
+  try {
+    await initializeDatabase();
+    console.log('Database initialized');
+    await createAdminUser();
+  } catch (error) {
+    console.error('Initialization failed:', error);
+    process.exit(1);
+  }
+}
 
 // Initialize and start server
 initialize().then(() => {

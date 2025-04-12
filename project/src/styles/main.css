@@ -260,3 +260,30 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   font-family: 'Playfair Display', serif;
 }
+
+/* CKEditor styles */
+.ck-editor__editable {
+  min-height: 300px;
+  max-height: 500px;
+  background-color: var(--paper-color) !important;
+  color: var(--ink-color) !important;
+  font-family: 'Crimson Pro', Georgia, serif !important;
+}
+
+.ck-toolbar {
+  border-color: var(--border-color) !important;
+  background-color: #FFF !important;
+}
+
+.ck-button {
+  color: var(--ink-color) !important;
+}
+
+.ck-button:hover {
+  background-color: var(--paper-color) !important;
+}
+
+.ck-button.ck-on {
+  background-color: var(--primary-color) !important;
+  color: var(--paper-color) !important;
+}

@@ -2,35 +2,35 @@ import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { existsSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync } from 'fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const dbPath = join(__dirname, 'database.sqlite');
 
+// Create a data directory if it doesn't exist
+const dataDir = join(__dirname, 'data');
+if (!existsSync(dataDir)) {
+  mkdirSync(dataDir, { recursive: true });
+}
+
+const dbPath = join(dataDir, 'database.sqlite');
 let db;
 
 export async function getDatabase() {
   if (!db) {
-    // Always remove the database file if it exists to ensure a clean start
-    if (existsSync(dbPath)) {
-      try {
-        unlinkSync(dbPath);
-        console.log('Removed existing database for clean start');
-      } catch (error) {
-        console.error('Error removing database:', error);
-      }
+    try {
+      db = await open({
+        filename: dbPath,
+        driver: sqlite3.Database
+      });
+
+      // Enable foreign keys
+      await db.run('PRAGMA foreign_keys = ON');
+      
+      console.log('Database connection established successfully');
+    } catch (error) {
+      console.error('Database connection error:', error);
+      throw error;
     }
-
-    db = await open({
-      filename: dbPath,
-      driver: sqlite3.Database
-    });
-
-    // Enable foreign keys
-    await db.run('PRAGMA foreign_keys = ON');
-    
-    // Initialize the database
-    await initializeDatabase();
   }
   return db;
 }
@@ -87,5 +87,28 @@ export async function initializeDatabase() {
     )
   `);
 
-  console.log('Database initialized successfully');
+  // Templates table
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS templates (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      description TEXT NOT NULL,
+      fields TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  // Roles table
+  await db.exec(`
+    CREATE TABLE IF NOT EXISTS roles (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      permissions TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  console.log('Database schema initialized successfully');
 }
